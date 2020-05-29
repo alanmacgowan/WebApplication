@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29926.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication", "WebApplication\WebApplication.csproj", "{C5A65F76-6B00-427B-9850-309430DD9197}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication.Tests", "WebApplication.Tests\WebApplication.Tests.csproj", "{0580C162-51DD-499D-930C-591FFC719324}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{AAEDA2DE-72E4-4194-AA2E-E12F01FEE10E}"
+	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yml = azure-pipelines.yml
+		Jenkinsfile = Jenkinsfile
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C5A65F76-6B00-427B-9850-309430DD9197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5A65F76-6B00-427B-9850-309430DD9197}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5A65F76-6B00-427B-9850-309430DD9197}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5A65F76-6B00-427B-9850-309430DD9197}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0580C162-51DD-499D-930C-591FFC719324}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0580C162-51DD-499D-930C-591FFC719324}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0580C162-51DD-499D-930C-591FFC719324}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0580C162-51DD-499D-930C-591FFC719324}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DEFD1EBE-2F22-462A-BFEF-C1F84DA999FF}
+	EndGlobalSection
+EndGlobal
