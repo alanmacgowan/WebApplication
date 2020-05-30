@@ -22,5 +22,22 @@ namespace WebApplication.Tests
             Assert.IsTrue(employee.FirstName == "Juan");
 
         }
+
+        [TestMethod]
+        public void TestMethod2()
+        {
+            //Arrange
+            var employee = new Employee();
+
+            //Act
+            employee.Id = 1;
+            employee.FirstName = "Juan";
+            employee.LastName = "Perez";
+
+            //Assert
+            Assert.IsTrue(employee.LastName == "Perez");
+
+        }
+
     }
 }

@@ -8,17 +8,23 @@ using System.Web;
 using System.Web.Mvc;
 using WebApplication.Data;
 using WebApplication.Models;
+using WebApplication.Services.Abstract;
 
 namespace WebApplication.Controllers
 {
     public class EmployeesController : Controller
     {
-        private WebApplicationContext db = new WebApplicationContext();
+        private IEmployeeService _employeeService;
+        
+        public EmployeesController(IEmployeeService employeeService)
+        {
+            _employeeService = employeeService;
+        }
 
         // GET: Employees
         public ActionResult Index()
         {
-            return View(db.Employees.ToList());
+            return View(_employeeService.GetAll());
         }
 
         // GET: Employees/Details/5
@@ -28,7 +34,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = db.Employees.Find(id);
+            Employee employee = _employeeService.GetById(id);
             if (employee == null)
             {
                 return HttpNotFound();
@@ -51,8 +57,7 @@ namespace WebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Employees.Add(employee);
-                db.SaveChanges();
+                _employeeService.Create(employee);
                 return RedirectToAction("Index");
             }
 
@@ -66,7 +71,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = db.Employees.Find(id);
+            Employee employee = _employeeService.GetById(id);
             if (employee == null)
             {
                 return HttpNotFound();
@@ -78,13 +83,12 @@ namespace WebApplication.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,BirthDate,Country")] Employee employee)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(employee).State = EntityState.Modified;
-                db.SaveChanges();
+                _employeeService.Edit(employee);
                 return RedirectToAction("Index");
             }
             return View(employee);
@@ -97,7 +101,7 @@ namespace WebApplication.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Employee employee = db.Employees.Find(id);
+            Employee employee = _employeeService.GetById(id);
             if (employee == null)
             {
                 return HttpNotFound();
@@ -110,18 +114,12 @@ namespace WebApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Employee employee = db.Employees.Find(id);
-            db.Employees.Remove(employee);
-            db.SaveChanges();
+            _employeeService.Delete(id);
             return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
             base.Dispose(disposing);
         }
     }
