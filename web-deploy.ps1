@@ -117,7 +117,8 @@ Function Run-Tests{
 Function Compress-Site{
     Write-Host "Generating zip file" -ForegroundColor Green
     Set-Location $SourcesFolder
-    Compress-Archive -Path $PublishUrl -DestinationPath $SourcesFolder
+    $CompressedFile = $PSScriptRoot + "\webapp_$((Get-Date).ToString("yyyyMMdd_HHmmss")).zip"
+    Compress-Archive -Path $PublishUrl -DestinationPath $CompressedFile
 }
 
 Function Publish-Site{
