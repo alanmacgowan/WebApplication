@@ -184,6 +184,7 @@
     <Content Include="Views\Employees\Edit.cshtml" />
     <Content Include="Views\Employees\Index.cshtml" />
     <Content Include="tsconfig.json" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -196,6 +197,9 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\index.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="dist/**" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
