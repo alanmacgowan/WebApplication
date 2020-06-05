@@ -1,7 +1,9 @@
 ﻿using Ninject;
+using Ninject.Web.Common;
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using WebApplication.Data;
 using WebApplication.Services.Abstract;
 using WebApplication.Services.Concrete;
 
@@ -28,6 +30,8 @@ public class NinjectDependencyResolver : IDependencyResolver
 
     private void AddBindings()
     {
-        kernel.Bind<IEmployeeService>().To<EmployeeService>();
+        kernel.Bind<WebApplicationContext>().To<WebApplicationContext>().InRequestScope();
+        kernel.Bind<IEmployeeService>().To<EmployeeService>().InRequestScope();
+
     }
 }

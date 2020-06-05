@@ -12,39 +12,44 @@ namespace WebApplication.Services.Concrete
     public class EmployeeService : IEmployeeService
     {
 
-        private WebApplicationContext db = new WebApplicationContext();
+        private WebApplicationContext _dbContext;
+
+        public EmployeeService(WebApplicationContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
 
         public List<Employee> GetAll()
         {
-            return db.Employees.ToList();
+            return _dbContext.Employees.ToList();
         }
 
         public Employee GetById(int? id)
         {
-            Employee employee = db.Employees.Find(id);
+            Employee employee = _dbContext.Employees.Find(id);
 
             return employee;
         }
 
         public Employee Create(Employee employee)
         {
-            db.Employees.Add(employee);
-            db.SaveChanges();
+            _dbContext.Employees.Add(employee);
+            _dbContext.SaveChanges();
             return employee;
         }
 
         public Employee Edit(Employee employee)
         {
-            db.Entry(employee).State = EntityState.Modified;
-            db.SaveChanges();
+            _dbContext.Entry(employee).State = EntityState.Modified;
+            _dbContext.SaveChanges();
             return employee;
         }
 
         public void Delete(int? id)
         {
-            Employee employee = db.Employees.Find(id);
-            db.Employees.Remove(employee);
-            db.SaveChanges();
+            Employee employee = _dbContext.Employees.Find(id);
+            _dbContext.Employees.Remove(employee);
+            _dbContext.SaveChanges();
         }
 
     }
