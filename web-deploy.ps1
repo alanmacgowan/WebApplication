@@ -1,5 +1,35 @@
+# Before running:
+# Check if PS execution policy is ok
+# Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+# Check MSBuild, Nuget and VSTest exe paths are valid
 
 
+<#
+.Synopsis
+Script to build, deploy, test and package web application.
+
+.DESCRIPTION
+Script to build, deploy, test and package web application.
+1. Get latest source
+2. Run webpack
+3. Restore packages
+4. Change AssemblyVersion
+5. Build project
+6. Run Tests
+7. Deploy - file system
+8. Package app
+9. Optional: clean artifacts
+
+.EXAMPLE
+./web-deploy -Branch "master" -CleanEnvironment $true
+
+#>
+
+#Script web-deploy
+#Creator Alan Macgowan
+#Date 06/07/2020
+#Updated
+#References
 # 1. Get latest source
 # 2. Run webpack
 # 3. Restore packages
@@ -19,7 +49,8 @@
 
 param(
     [String]$GitRepository = "https://github.com/alanmacgowan/WebApplication.git",
-    [String]$PublishUrl = "c:\\Jenkins_builds\\sites\\dev",
+    [String]$Branch = "master",
+    [String]$PublishUrl = "c:\Jenkins_builds\sites\dev",
     [bool]$CleanEnvironment = $false
 )
 
@@ -37,8 +68,7 @@ Function Initialize-Directory{
 }
 
 Function Get-SourceCode{
-    Param ($Branch)
-    Write-Host "Getting Source Code" -ForegroundColor Green
+    Write-Host "Getting Source Code - Branch: $Branch" -ForegroundColor Green
     $SourcePath = $SourcesFolder + "\WebApplication"
     If (Test-Path $SourcePath) {
         Set-Location $SourcePath
@@ -62,8 +92,8 @@ Function Build-Webpack{
     Write-Host "Running Webpack" -ForegroundColor Green
     $SourcePath = $SourcesFolder + "\WebApplication\WebApplication"
     Set-Location $SourcePath
-    npm install;
-    npm run build:prod;
+    npm install
+    npm run build:prod
 }
 
 Function Build-Solution{
@@ -83,12 +113,19 @@ Function Run-Tests{
 
     & $VSTestPath $Args
 }
+
+Function Compress-Site{
+    Write-Host "Generating zip file" -ForegroundColor Green
+    Set-Location $SourcesFolder
+    Compress-Archive -Path $PublishUrl -DestinationPath $SourcesFolder
+}
+
 Function Publish-Site{
     $ErrorActionPreference = 'Stop'
     #Try{
         Initialize-Directory
 
-        Get-SourceCode "master"
+        Get-SourceCode
     
         Get-Packages
     
@@ -97,6 +134,8 @@ Function Publish-Site{
         Build-Solution
     
         Run-Tests
+
+        Compress-Site
     <#}
     Catch{
         Write-Host "Error" -ForegroundColor Red
