@@ -1,13 +1,11 @@
-﻿using System;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using System.Web.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Web.Mvc;
 using WebApplication.Controllers;
 using WebApplication.Models;
 using WebApplication.Services.Abstract;
 
-namespace WebApplication.Tests
+namespace WebApplication.Tests.Unit
 {
     [TestClass]
     public class EmployeesControllerTests

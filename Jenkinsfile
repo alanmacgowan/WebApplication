@@ -30,9 +30,9 @@ pipeline {
 				stage('Unit test') {
 					when { branch 'develop' }
 				    steps {
-				        dir('WebApplication.Tests\\bin\\Release')
+				        dir('WebApplication.Tests.Unit\\bin\\Release')
                         {
-                            bat "\"${VSTest}\" \"WebApplication.Tests.dll\" /Logger:trx;LogFileName=Results_${env.BUILD_ID}.trx /Framework:Framework45"
+                            bat "\"${VSTest}\" \"WebApplication.Tests.Unit.dll\" /Logger:trx;LogFileName=Results_${env.BUILD_ID}.trx /Framework:Framework45"
                         }
                         step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: true, keepLongStdio: true])
                     }

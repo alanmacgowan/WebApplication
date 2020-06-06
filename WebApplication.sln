@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication", "WebApplication\WebApplication.csproj", "{C5A65F76-6B00-427B-9850-309430DD9197}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{AAEDA2DE-72E4-4194-AA2E-E12F01FEE10E}"
 	ProjectSection(SolutionItems) = preProject
 		azure-pipelines.yml = azure-pipelines.yml
@@ -12,7 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configurat
 		web-deploy.ps1 = web-deploy.ps1
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication.Tests", "WebApplication.Tests\WebApplication.Tests.csproj", "{0580C162-51DD-499D-930C-591FFC719324}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication.Tests.Acceptance", "WebApplication.Tests.Acceptance\WebApplication.Tests.Acceptance.csproj", "{52C15D4E-6181-419B-9877-EAFBB3A6FB82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication", "WebApplication\WebApplication.csproj", "{C5A65F76-6B00-427B-9850-309430DD9197}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication.Tests.Unit", "WebApplication.Tests.Unit\WebApplication.Tests.Unit.csproj", "{0580C162-51DD-499D-930C-591FFC719324}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +22,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{52C15D4E-6181-419B-9877-EAFBB3A6FB82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52C15D4E-6181-419B-9877-EAFBB3A6FB82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52C15D4E-6181-419B-9877-EAFBB3A6FB82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52C15D4E-6181-419B-9877-EAFBB3A6FB82}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C5A65F76-6B00-427B-9850-309430DD9197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C5A65F76-6B00-427B-9850-309430DD9197}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5A65F76-6B00-427B-9850-309430DD9197}.Release|Any CPU.ActiveCfg = Release|Any CPU

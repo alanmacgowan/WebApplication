@@ -14,12 +14,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Sample Application", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Employees", "Index", "Employees")</li>
+                    <li>@Html.ActionLink("Employees", "Index", "Employees", null, new { id = "employees_menu" })</li>
                 </ul>
             </div>
         </div>
@@ -28,7 +28,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <span class="pull-left">&copy; @DateTime.Now.Year - My ASP.NET Application</span>
+            <span class="pull-left" id="yearSpan">&copy; @DateTime.Now.Year - My ASP.NET Application</span>
 
             <span class="pull-right">Version: @ViewContext.Controller.GetType().Assembly.GetName().Version</span>
         </footer>

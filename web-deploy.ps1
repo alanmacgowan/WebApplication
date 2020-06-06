@@ -107,9 +107,9 @@ Function Build-Solution{
 
 Function Run-Tests{
     Write-Host "Running Tests" -ForegroundColor Green
-    $SourcePath = $SourcesFolder + "\WebApplication\WebApplication.Tests\bin\Release"
+    $SourcePath = $SourcesFolder + "\WebApplication\WebApplication.Tests.Unit\bin\Release"
     Set-Location $SourcePath
-    $Args = @("WebApplication.Tests.dll", "/Logger:trx;LogFileName=Results.trx", "/Framework:Framework45");
+    $Args = @("WebApplication.Tests.Unit.dll", "/Logger:trx;LogFileName=Results.trx", "/Framework:Framework45");
 
     & $VSTestPath $Args
 }
