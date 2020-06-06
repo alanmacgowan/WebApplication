@@ -72,7 +72,7 @@ namespace WebApplication.Tests.Acceptance.Base
                     if (headless)
                     {
                         var chromeOptions = new ChromeOptions();
-                        chromeOptions.AddArguments("headless");
+                        chromeOptions.AddArguments("--headless");
                         chromeOptions.AddArguments("window-size=1200x600");
                         Browser = new ChromeDriver(chromeOptions);
                     }
