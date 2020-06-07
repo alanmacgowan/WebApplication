@@ -37,6 +37,16 @@ pipeline {
                         step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: true, keepLongStdio: true])
                     }
                 }
+				stage('Acceptance test') {
+					when { branch 'develop' }
+				    steps {
+				        dir('WebApplication.Tests.Acceptance\\bin\\Release')
+                        {
+                            bat "\"${VSTest}\" \"WebApplication.Tests.Acceptance.dll\" /Logger:trx;LogFileName=Results_${env.BUILD_ID}.trx /Framework:Framework45"
+                        }
+                        step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: true, keepLongStdio: true])
+                    }
+                }
 				stage('Package') {
 					when { branch 'develop' }
 					steps {
