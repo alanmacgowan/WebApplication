@@ -27,9 +27,12 @@ namespace WebApplication.Tests.Acceptance.Pages
         
         public bool ValidatePage()
         {
-            /// Returns true if page is displayed and expected elements are there, false otherwise
             return DriverWait.Until(drv => employees_menu.Displayed);
         }
 
+        public void ClickEmployeesMenu()
+        {
+            employees_menu.Click();
+        }
     }
 }

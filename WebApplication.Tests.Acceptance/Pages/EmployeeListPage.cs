@@ -21,6 +21,12 @@ namespace WebApplication.Tests.Acceptance.Pages
                 return BaseUrl + "/Employees";
             }
         }
+        public IWebElement employees_table => Driver.FindElement(By.Id("employees_table"));
+
+        public bool TableDisplayed()
+        {
+            return DriverWait.Until(drv => employees_table.Displayed);
+        }
 
     }
 }

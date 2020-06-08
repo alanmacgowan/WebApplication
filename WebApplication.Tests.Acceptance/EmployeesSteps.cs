@@ -23,20 +23,18 @@ namespace WebApplication.Tests.Acceptance
         public void GivenIAmOnTheHomePage()
         {
             _homePage.Open();
-            Assert.IsTrue(_homePage.ValidatePage());
         }
 
         [When(@"I click on Employees menu")]
         public void WhenIClickOnEmployeesMenu()
         {
-            Assert.IsTrue(_homePage.ValidatePage());
+            _homePage.ClickEmployeesMenu();
         }
 
         [Then(@"Employee List should be displayed")]
         public void ThenEmployeeListShouldBeDisplayed()
         {
-            Assert.IsTrue(_homePage.ValidatePage());
-            //ScenarioContext.Current.Pending();
+            Assert.IsTrue(_employeeListPage.TableDisplayed());
         }
     }
 }

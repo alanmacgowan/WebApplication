@@ -33,21 +33,6 @@ namespace WebApplication.Tests.Unit
             Assert.AreEqual((result.Model as Employee).FirstName, employee.FirstName);
         }
 
-        [TestMethod]
-        public void TestMethod2()
-        {
-            //Arrange
-            var employee = new Employee();
-
-            //Act
-            employee.Id = 1;
-            employee.FirstName = "Juan";
-            employee.LastName = "Perez";
-
-            //Assert
-            Assert.IsTrue(employee.LastName == "Perez");
-
-        }
 
     }
 }

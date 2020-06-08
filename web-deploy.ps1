@@ -20,8 +20,15 @@ Script to build, deploy, test and package web application.
 8. Package app
 9. Optional: clean artifacts
 
+#other:
+# run code metrics
+# run code coverage
+# smoke tests
+# deploy remote iis?
+
+
 .EXAMPLE
-./web-deploy -Branch "master" -CleanEnvironment $true
+./web-deploy -Version "1.0.0.0" -Branch "master" -CleanEnvironment $true
 
 #>
 
@@ -30,24 +37,9 @@ Script to build, deploy, test and package web application.
 #Date 06/07/2020
 #Updated
 #References
-# 1. Get latest source
-# 2. Run webpack
-# 3. Restore packages
-# 4. Change AssemblyVersion
-# 5. Build project
-# 6. Run Tests
-# 7. Deploy - file system
-# 8. Package app
-
-#other:
-# run code metrics
-# run code coverage
-# smoke tests
-# deploy remote iis?
-#
-
 
 param(
+    [Parameter(Mandatory=$true)][String]$Version,
     [String]$GitRepository = "https://github.com/alanmacgowan/WebApplication.git",
     [String]$Branch = "master",
     [String]$PublishUrl = "c:\Jenkins_builds\sites\dev",
@@ -96,6 +88,31 @@ Function Build-Webpack{
     npm run build:prod
 }
 
+Function Update-AssemblyVersion
+{
+  Write-Host "Updating AssemblyVersion to $Version" -ForegroundColor Green  
+  $SourcePath = $SourcesFolder + "\WebApplication\WebApplication"
+  Set-Location $SourcePath
+  $PatternVersion = '\[assembly: AssemblyVersion\("(.*)"\)\]'
+  $PatternFileVersion = '\[assembly: AssemblyFileVersion\("(.*)"\)\]'
+  $AssemblyFiles = Get-ChildItem . AssemblyInfo.cs -rec
+
+  Foreach ($File in $AssemblyFiles)
+  {
+    (Get-Content $File.PSPath) | ForEach-Object{
+        If($_ -match $PatternVersion){
+            $FileVersion = [version]$Matches[1]
+            '[assembly: AssemblyVersion("{0}")]' -f $Version
+        } ElseIf($_ -match $PatternFileVersion){
+            $FileVersion = [version]$Matches[1]
+            '[assembly: AssemblyFileVersion("{0}")]' -f $Version
+        } Else {
+            $_
+        }
+    } | Set-Content $file.PSPath
+  }
+}
+
 Function Build-Solution{
     Write-Host "Building Solution" -ForegroundColor Green
     $SourcePath = $SourcesFolder + "\WebApplication"
@@ -132,6 +149,8 @@ Function Publish-Site{
         Get-Packages
     
         Build-Webpack
+
+        Update-AssemblyVersion
 
         Build-Solution
     
