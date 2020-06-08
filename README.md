@@ -5,6 +5,10 @@ Sample Application for CI/CD
 * Asp.Net MVC (EF)
 * Webpack
 * JQuery & Bootstrap
+* MSTest
+* Moq
+* Selenium
+* Specflow
 
 ## Includes:
 * Jenkins file: for multibranch pipeline on Jenkins, triggers from SCM on PR merged to develop branch, builds and deploys to local IIS Server.
