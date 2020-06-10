@@ -1,7 +1,7 @@
 # Before running:
 # Check if PS execution policy is ok
 # Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
-# Check MSBuild, Nuget and VSTest exe paths are valid
+# Check MSBuild, Nuget, MSDeploy and VSTest exe paths are valid
 
 
 <#
@@ -14,42 +14,52 @@ Script to build, deploy, test and package web application.
 2. Run webpack
 3. Restore packages
 4. Change AssemblyVersion
-5. Build project
+5. Package site
 6. Run Tests
-7. Deploy - file system
-8. Package app
+7. Deploy - IIS
+8. Run Acceptance Tests
 9. Optional: clean artifacts
 
 #other:
 # run code metrics
 # run code coverage
 # smoke tests
-# deploy remote iis?
 
 
 .EXAMPLE
-./web-deploy -Version "1.0.0.0" -Branch "master" -CleanEnvironment $true
+./web-publish -Version "1.0.0.0" -Branch "master" -CleanEnvironment $true
 
 #>
 
-#Script web-deploy
+#Script web-publish
 #Creator Alan Macgowan
 #Date 06/07/2020
 #Updated
 #References
 
+
 param(
     [Parameter(Mandatory=$true)][String]$Version,
     [String]$GitRepository = "https://github.com/alanmacgowan/WebApplication.git",
     [String]$Branch = "master",
-    [String]$PublishUrl = "c:\Jenkins_builds\sites\dev",
+    [String]$PublishUrl = "c:\Jenkins_builds\files",
+    [String]$IISSite = "TestAppDev",
     [bool]$CleanEnvironment = $false
 )
+
+If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
+{   
+    $Arguments = "& '" + $myinvocation.mycommand.definition + "'"
+    Start-Process powershell -Verb runAs -ArgumentList $Arguments
+    Break
+}
 
 $MSBuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\msbuild.exe"
 $NugetPath = "C:\Program Files (x86)\Jenkins\nuget.exe"
 $VSTestPath = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe"
+$MSDeployPath = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
 $SourcesFolder = $PSScriptRoot + "\sources"
+$DateStamp = $((Get-Date).ToString("yyyyMMdd_HHmmss"))
 
 Function Initialize-Directory{
     Write-Host "Checking directory exists" -ForegroundColor Green
@@ -112,11 +122,11 @@ Function Update-AssemblyVersion{
   }
 }
 
-Function Build-Solution{
+Function Package-Site{
     Write-Host "Building Solution" -ForegroundColor Green
     $SourcePath = $SourcesFolder + "\WebApplication"
     Set-Location $SourcePath
-    $Args = @("WebApplication.sln", "/p:DeployOnBuild=true", "/p:DeployDefaultTarget=WebPublish", "/p:WebPublishMethod=FileSystem", "/p:SkipInvalidConfigurations=true", "/t:build", "/p:Configuration=Release", "/p:Platform=`"Any CPU`"", "/p:DeleteExistingFiles=True", "/p:publishUrl=$PublishUrl");
+    $Args = @("WebApplication.sln", "/p:DeployOnBuild=true", "/p:WebPublishMethod=Package", "/p:PackageAsSingleFile=true", "/p:SkipInvalidConfigurations=true", "/t:build", "/p:Configuration=Release", "/p:Platform=`"Any CPU`"", "/p:DesktopBuildPackageLocation=`"$PublishUrl\WebApp_$DateStamp.zip`"", "/p:DeployIisAppPath=`"$IISSite`"");
 
     & $MSBuildPath $Args
 }
@@ -131,11 +141,12 @@ Function Run-Tests{
     & $VSTestPath $Args
 }
 
-Function Compress-Site{
-    Write-Host "Generating zip file" -ForegroundColor Green
+Function Deploy-Site{
+    Write-Host "Deploying Site $IISSite" -ForegroundColor Green
     Set-Location $SourcesFolder
-    $CompressedFile = $PSScriptRoot + "\webapp_$((Get-Date).ToString("yyyyMMdd_HHmmss")).zip"
-    Compress-Archive -Path $PublishUrl -DestinationPath $CompressedFile
+    $Args = @("-source:package=`"$PublishUrl\WebApp_$DateStamp.zip`"", "-verb:sync", "-dest:auto");
+
+    & $MSDeployPath $Args
 }
 
 Function Publish-Site{
@@ -151,13 +162,13 @@ Function Publish-Site{
 
         Update-AssemblyVersion
 
-        Build-Solution
+        Package-Site
     
         Run-Tests "WebApplication.Tests.Unit"
 
-        Run-Tests "WebApplication.Tests.Acceptance"
+        Deploy-Site
 
-        Compress-Site
+        Run-Tests "WebApplication.Tests.Acceptance"
     <#}
     Catch{
         Write-Host "Error" -ForegroundColor Red

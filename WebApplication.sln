@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configurat
 		azure-pipelines.yml = azure-pipelines.yml
 		Jenkinsfile = Jenkinsfile
 		web-deploy.ps1 = web-deploy.ps1
+		web-publish.ps1 = web-publish.ps1
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication.Tests.Acceptance", "WebApplication.Tests.Acceptance\WebApplication.Tests.Acceptance.csproj", "{52C15D4E-6181-419B-9877-EAFBB3A6FB82}"
