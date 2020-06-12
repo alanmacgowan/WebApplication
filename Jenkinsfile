@@ -15,20 +15,27 @@ pipeline {
 				//	}
 				//}
 				stage('Restore'){
-					when { branch 'develop' }
+					//when { branch 'develop' }
 				    steps{
 						bitbucketStatusNotify(buildState: 'INPROGRESS')
 				        bat "\"${Nuget}\" restore WebApplication.sln"
 				    }
 				}
+				stage('NodeJS'){
+					steps{
+                        nodejs(nodeJSInstallationName: 'Node') {
+                            bat 'cd "WebApplication" && npm install && npm run build:prod'
+                        }
+					}
+				}
 				stage('Build') {
-					when { branch 'develop' }
+					//when { branch 'develop' }
 					steps {
 					    bat "\"${MSBuild}\" WebApplication.sln /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:SkipInvalidConfigurations=true /t:build /p:Configuration=Release /p:Platform=\"Any CPU\" /p:DeleteExistingFiles=True /p:publishUrl=c:\\Jenkins_builds\\sites\\dev"
 						}
 				}
 				stage('Unit test') {
-					when { branch 'develop' }
+					//when { branch 'develop' }
 				    steps {
 				        dir('WebApplication.Tests.Unit\\bin\\Release')
                         {
@@ -38,7 +45,7 @@ pipeline {
                     }
                 }
 				stage('Acceptance test') {
-					when { branch 'develop' }
+					//when { branch 'develop' }
 				    steps {
 				        dir('WebApplication.Tests.Acceptance\\bin\\Release')
                         {
@@ -48,7 +55,7 @@ pipeline {
                     }
                 }
 				stage('Package') {
-					when { branch 'develop' }
+					//when { branch 'develop' }
 					steps {
 					   script{
 							zip archive: true, dir: 'c:\\Jenkins_builds\\sites\\dev', glob: '', zipFile: "c:\\Jenkins_builds\\files\\webapp_${env.BUILD_ID}.zip"
