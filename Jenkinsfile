@@ -5,6 +5,7 @@ pipeline {
                 VSTest = tool 'vstest'	
 				MSBuild = tool 'msbuild'
 				Nuget = 'C:\\Program Files (x86)\\Jenkins\\nuget.exe'
+				MSDeploy = "C:\\Program Files (x86)\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"
             }
 			stages {
 				//stage('Source'){
@@ -28,10 +29,10 @@ pipeline {
                         }
 					}
 				}
-				stage('Build') {
+				stage('Build & Package') {
 					//when { branch 'develop' }
 					steps {
-					    bat "\"${MSBuild}\" WebApplication.sln /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:SkipInvalidConfigurations=true /t:build /p:Configuration=Release /p:Platform=\"Any CPU\" /p:DeleteExistingFiles=True /p:publishUrl=c:\\Jenkins_builds\\sites\\dev"
+					    bat "\"${MSBuild}\" WebApplication.sln /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /t:build /p:Configuration=Production /p:Platform=\"Any CPU\" /p:DesktopBuildPackageLocation=c:\\Jenkins_builds\\files\\WebApp_${env.BUILD_ID}.zip /p:DeployIisAppPath=\"TestAppDev\""
 						}
 				}
 				stage('Unit test') {
@@ -44,6 +45,12 @@ pipeline {
                         step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: true, keepLongStdio: true])
                     }
                 }
+				stage('Deploy') {
+					//when { branch 'develop' }
+					steps {
+					    bat "\"${MSDeploy}\" -source:package=\"c:\\Jenkins_builds\\files\\WebApp_${env.BUILD_ID}.zip\"  -verb:sync -dest:auto -allowUntrusted=true "
+						}
+				}
 				stage('Acceptance test') {
 					//when { branch 'develop' }
 				    steps {
@@ -54,14 +61,6 @@ pipeline {
                         step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: true, keepLongStdio: true])
                     }
                 }
-				stage('Package') {
-					//when { branch 'develop' }
-					steps {
-					   script{
-							zip archive: true, dir: 'c:\\Jenkins_builds\\sites\\dev', glob: '', zipFile: "c:\\Jenkins_builds\\files\\webapp_${env.BUILD_ID}.zip"
-						}
-					}
-				}
 			}
 			post { 
                 failure { 
