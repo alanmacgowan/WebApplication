@@ -31,6 +31,30 @@ pipeline {
 							}
                         }
 					}
+				}				
+				stage('Set Assembly Version') {
+					//when { branch 'develop' }
+					steps {
+					    	dir('WebApplication\\Properties')
+							{
+								powershell ("""
+								  \$PatternVersion = '\\[assembly: AssemblyVersion\\("(.*)"\\)\\]'
+								  \$AssemblyFiles = Get-ChildItem . AssemblyInfo.cs -rec
+								  \$Version = "1.1.${env.BUILD_ID}.*"
+
+								  Foreach (\$File in \$AssemblyFiles)
+								  {
+									(Get-Content \$File.PSPath) | ForEach-Object{
+										If(\$_ -match \$PatternVersion){
+											'[assembly: AssemblyVersion("{0}")]' -f \$Version
+										} Else {
+											\$_
+										}
+									} | Set-Content \$file.PSPath
+								  }
+								""")
+							  }
+						  }
 				}
 				stage('Build & Package') {
 					//when { branch 'develop' }
