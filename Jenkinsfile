@@ -40,13 +40,14 @@ pipeline {
 								powershell ("""
 								  \$PatternVersion = '\\[assembly: AssemblyVersion\\("(.*)"\\)\\]'
 								  \$AssemblyFiles = Get-ChildItem . AssemblyInfo.cs -rec
-								  \$Version = "1.1.${env.BUILD_ID}.*"
 
 								  Foreach (\$File in \$AssemblyFiles)
 								  {
 									(Get-Content \$File.PSPath) | ForEach-Object{
 										If(\$_ -match \$PatternVersion){
-											'[assembly: AssemblyVersion("{0}")]' -f \$Version
+										    $fileVersion = [version]$matches[1]
+											$newVersion = "{0}.{1}.{2}.{3}" -f $fileVersion.Major, $fileVersion.Minor, ${env.BUILD_ID}, * 
+											'[assembly: AssemblyVersion("{0}")]' -f $newVersion
 										} Else {
 											\$_
 										}
