@@ -51,6 +51,17 @@ pipeline {
 					    bat "\"${MSDeploy}\" -source:package=\"c:\\Jenkins_builds\\files\\WebApp_${env.BUILD_ID}.zip\"  -verb:sync -dest:auto -allowUntrusted=true "
 						}
 				}
+				stage('Smoke Test') {
+					//when { branch 'develop' }
+					steps {
+							powershell ("""
+								$result = Invoke-WebRequest http://localhost:8090/
+								if ($result.StatusCode -ne 200) {
+								  Write-Error "Did not get 200 OK"
+								}
+							""")
+						  }
+				}
 				stage('Acceptance test') {
 					//when { branch 'develop' }
 				    steps {

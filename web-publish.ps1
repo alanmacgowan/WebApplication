@@ -149,6 +149,17 @@ Function Deploy-Site{
     & $MSDeployPath $Args
 }
 
+
+Function Smoke-Test{
+    $Result = Invoke-WebRequest http://localhost:8090/
+    If ($Result.StatusCode -ne 200) {
+      Write-Error "Did not get 200 OK"
+    } Else{
+      Write-Host "Successfully connect." -ForegroundColor Green  
+    }
+}
+
+
 Function Publish-Site{
     $ErrorActionPreference = 'Stop'
     #Try{
@@ -167,6 +178,8 @@ Function Publish-Site{
         Run-Tests "WebApplication.Tests.Unit"
 
         Deploy-Site
+
+        Smoke-Test
 
         Run-Tests "WebApplication.Tests.Acceptance"
     <#}
