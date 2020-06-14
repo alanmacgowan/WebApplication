@@ -45,9 +45,9 @@ pipeline {
 								  {
 									(Get-Content \$File.PSPath) | ForEach-Object{
 										If(\$_ -match \$PatternVersion){
-										    $fileVersion = [version]$matches[1]
-											$newVersion = "{0}.{1}.{2}.{3}" -f $fileVersion.Major, $fileVersion.Minor, ${env.BUILD_ID}, * 
-											'[assembly: AssemblyVersion("{0}")]' -f $newVersion
+										    \$fileVersion = [version]\$matches[1]
+											\$newVersion = "{0}.{1}.{2}.{3}" -f \$fileVersion.Major, \$fileVersion.Minor, \${env.BUILD_ID}, * 
+											'[assembly: AssemblyVersion("{0}")]' -f \$newVersion
 										} Else {
 											\$_
 										}
