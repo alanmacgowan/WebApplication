@@ -25,7 +25,10 @@ pipeline {
 				stage('NodeJS'){
 					steps{
                         nodejs(nodeJSInstallationName: 'Node') {
-                            bat 'cd "WebApplication" && npm install && npm run build:prod'
+							dir('WebApplication')
+							{
+								bat 'npm install && npm run build:prod'
+							}
                         }
 					}
 				}
@@ -55,9 +58,11 @@ pipeline {
 					//when { branch 'develop' }
 					steps {
 							powershell ("""
-								$result = Invoke-WebRequest http://localhost:8090/
-								if ($result.StatusCode -ne 200) {
-								  Write-Error "Did not get 200 OK"
+								\$result = Invoke-WebRequest http://localhost:8090/
+								if (\$result.StatusCode -ne 200) {
+									Write-Error \"Did not get 200 OK\"
+								} else{
+									Write-Host \"Successfully connect.\"
 								}
 							""")
 						  }
