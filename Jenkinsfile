@@ -8,13 +8,14 @@ pipeline {
 				MSDeploy = "C:\\Program Files (x86)\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"
             }
 			stages {
-				//stage('Source'){
+				stage('Source'){
 				//	when { branch 'develop' }
-				//	steps{
+					steps{
+						slackSend (color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
 				//	    bitbucketStatusNotify(buildState: 'INPROGRESS')
 				//		checkout([$class: 'GitSCM', branches: [[name: 'develop']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '1c95fa66-e00f-462f-b2f2-c1dfd0b7c795', url: 'https://alanmacgowan@bitbucket.org/alanmacgowan/web.git']]])
-				//	}
-				//}
+					}
+				}
 				stage('Restore'){
 					//when { branch 'develop' }
 				    steps{
