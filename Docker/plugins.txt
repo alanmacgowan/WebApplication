@@ -1,0 +1,12 @@
+bitbucket-build-status-notifier:latest
+github:latest
+git:latest
+global-slack-notifier:latest
+atlassian-jira-software-cloud:latest
+pollscm:latest
+timestamper:latest
+mstest:latest
+msbuild:latest
+nodejs:latest
+vstestrunner:latest
+workflow-aggregator:latest

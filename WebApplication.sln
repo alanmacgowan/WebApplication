@@ -6,6 +6,8 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{AAEDA2DE-72E4-4194-AA2E-E12F01FEE10E}"
 	ProjectSection(SolutionItems) = preProject
 		azure-pipelines.yml = azure-pipelines.yml
+		Docker\docker-compose.yml = Docker\docker-compose.yml
+		Docker\Dockerfile = Docker\Dockerfile
 		Jenkinsfile = Jenkinsfile
 		web-deploy.ps1 = web-deploy.ps1
 		web-publish.ps1 = web-publish.ps1
@@ -16,6 +18,18 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication", "WebApplication\WebApplication.csproj", "{C5A65F76-6B00-427B-9850-309430DD9197}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication.Tests.Unit", "WebApplication.Tests.Unit\WebApplication.Tests.Unit.csproj", "{0580C162-51DD-499D-930C-591FFC719324}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{6F276FAD-1C72-43BE-B9E1-60E9B3D40D44}"
+	ProjectSection(SolutionItems) = preProject
+		Docker\docker-compose.yml = Docker\docker-compose.yml
+		Docker\Dockerfile = Docker\Dockerfile
+		Docker\plugins.txt = Docker\plugins.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{B96C6131-6007-4B69-8278-2AB9A5A5FA9F}"
+	ProjectSection(SolutionItems) = preProject
+		Docker\scripts\admin.groovy = Docker\scripts\admin.groovy
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +66,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6F276FAD-1C72-43BE-B9E1-60E9B3D40D44} = {AAEDA2DE-72E4-4194-AA2E-E12F01FEE10E}
+		{B96C6131-6007-4B69-8278-2AB9A5A5FA9F} = {6F276FAD-1C72-43BE-B9E1-60E9B3D40D44}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DEFD1EBE-2F22-462A-BFEF-C1F84DA999FF}
