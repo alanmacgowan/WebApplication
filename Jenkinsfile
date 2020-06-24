@@ -1,3 +1,12 @@
+void setBuildStatus(String message, String state) {
+  step([
+      $class: "GitHubCommitStatusSetter",
+      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/alanmacgowan/WebApplication"],
+      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
+      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
+  ]);
+}
 
 pipeline {
 			agent any
@@ -12,14 +21,13 @@ pipeline {
 				//	when { branch 'develop' }
 					steps{
 						slackSend (color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-				//	    bitbucketStatusNotify(buildState: 'INPROGRESS')
-				//		checkout([$class: 'GitSCM', branches: [[name: 'develop']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '1c95fa66-e00f-462f-b2f2-c1dfd0b7c795', url: 'https://alanmacgowan@bitbucket.org/alanmacgowan/web.git']]])
+						setBuildStatus("PENDING: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", "PENDING");
+						checkout([$class: 'GitSCM', branches: [[name: 'master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/alanmacgowan/WebApplication.git']]])
 					}
 				}
 				stage('Restore'){
 					//when { branch 'develop' }
 				    steps{
-						bitbucketStatusNotify(buildState: 'INPROGRESS')
 				        bat "\"${Nuget}\" restore WebApplication.sln"
 				    }
 				}
@@ -108,14 +116,12 @@ pipeline {
 			post { 
                 failure { 
 					slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-                    bitbucketStatusNotify(buildState: 'FAILED')
+					setBuildStatus("FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", "FAILED");
                 }
                 success{
 					slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-                    bitbucketStatusNotify(buildState: 'SUCCESSFUL')
-                }
-				always {
-                    jiraSendBuildInfo site: 'alanmacgowan.atlassian.net'
-                }
+ 				    setBuildStatus("SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", "SUCCESSFUL");
+               }
+		
 			}
 }
