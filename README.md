@@ -24,6 +24,16 @@ stage('Get Source'){
   }
 }
 ```
+### Stage Restore
+```
+stage('Restore'){
+  //when { branch 'develop' }
+    steps{
+        bat "\"${Nuget}\" restore WebApplication.sln"
+    }
+}
+```
+
 ## Includes:
 * Jenkinsfile: for multibranch pipeline on Jenkins, triggers from SCM on PR merged to develop branch, builds and deploys to local IIS Server.
 * web-deploy.ps1: powershell script that builds, deploys to file system and package web application.
