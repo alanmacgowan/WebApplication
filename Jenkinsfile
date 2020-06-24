@@ -25,47 +25,51 @@ pipeline {
 						checkout([$class: 'GitSCM', branches: [[name: 'master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/alanmacgowan/WebApplication.git']]])
 					}
 				}
-				stage('Restore'){
-					//when { branch 'develop' }
-				    steps{
-				        bat "\"${Nuget}\" restore WebApplication.sln"
-				    }
-				}
-				stage('NodeJS'){
-					steps{
-                        nodejs(nodeJSInstallationName: 'Node') {
-							dir('WebApplication')
-							{
-								bat 'npm install && npm run build:prod'
-							}
-                        }
-					}
-				}				
-				stage('Set Assembly Version') {
-					//when { branch 'develop' }
-					steps {
-					    	dir('WebApplication\\Properties')
-							{
-								powershell ("""
-								  \$PatternVersion = '\\[assembly: AssemblyVersion\\("(.*)"\\)\\]'
-								  \$AssemblyFiles = Get-ChildItem . AssemblyInfo.cs -rec
-								  \$BuildNumber = ${env.BUILD_ID}
-
-								  Foreach (\$File in \$AssemblyFiles)
-								  {
-									(Get-Content \$File.PSPath) | ForEach-Object{
-										If(\$_ -match \$PatternVersion){
-										    \$fileVersion = [version]\$matches[1]
-											\$newVersion = "{0}.{1}.{2}.{3}" -f \$fileVersion.Major, \$fileVersion.Minor, \$BuildNumber, '*'
-											'[assembly: AssemblyVersion("{0}")]' -f \$newVersion
-										} Else {
-											\$_
+				stage('Restore dependencies'){
+					parallel {
+									stage('Restore'){
+										//when { branch 'develop' }
+										steps{
+											bat "\"${Nuget}\" restore WebApplication.sln"
 										}
-									} | Set-Content \$file.PSPath
-								  }
-								""")
-							  }
-						  }
+									}
+									stage('NodeJS'){
+										steps{
+											nodejs(nodeJSInstallationName: 'Node') {
+												dir('WebApplication')
+												{
+													bat 'npm install && npm run build:prod'
+												}
+											}
+										}
+									}				
+									stage('Set Assembly Version') {
+										//when { branch 'develop' }
+										steps {
+					    						dir('WebApplication\\Properties')
+												{
+													powershell ("""
+													  \$PatternVersion = '\\[assembly: AssemblyVersion\\("(.*)"\\)\\]'
+													  \$AssemblyFiles = Get-ChildItem . AssemblyInfo.cs -rec
+													  \$BuildNumber = ${env.BUILD_ID}
+
+													  Foreach (\$File in \$AssemblyFiles)
+													  {
+														(Get-Content \$File.PSPath) | ForEach-Object{
+															If(\$_ -match \$PatternVersion){
+																\$fileVersion = [version]\$matches[1]
+																\$newVersion = "{0}.{1}.{2}.{3}" -f \$fileVersion.Major, \$fileVersion.Minor, \$BuildNumber, '*'
+																'[assembly: AssemblyVersion("{0}")]' -f \$newVersion
+															} Else {
+																\$_
+															}
+														} | Set-Content \$file.PSPath
+													  }
+													""")
+												 }
+										}
+									}
+					}
 				}
 				stage('Build & Package') {
 					//when { branch 'develop' }
