@@ -18,7 +18,7 @@ pipeline {
 				}
 				stage('Restore dependencies'){
 					parallel {
-						stage('Restore'){
+						stage('Nuget'){
 							//when { branch 'develop' }
 							steps{
 								bat "\"${Nuget}\" restore WebApplication.sln"
@@ -48,7 +48,7 @@ pipeline {
 				stage('Build & Package') {
 					//when { branch 'develop' }
 					steps {
-					    bat "\"${MSBuild}\" WebApplication.sln /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /t:build /p:Configuration=QA /p:Platform=\"Any CPU\" /p:DesktopBuildPackageLocation=\"%WORKSPACE%\\artifacts\\WebApp_${env.RELEASE_VERSION}.${env.BUILD_NUMBER}.zip\" /p:DeployIisAppPath=\"TestAppDev\""
+					    bat "\"${MSBuild}\" WebApplication.sln /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /t:build /p:Configuration=QA /p:Platform=\"Any CPU\" /p:DesktopBuildPackageLocation=\"%WORKSPACE%\\artifacts\\WebApp_${env.RELEASE_VERSION}.${env.BUILD_NUMBER}.zip\""
 					}
 				}
 				stage('Unit test') {
@@ -56,22 +56,35 @@ pipeline {
 				    steps {
 				        dir('WebApplication.Tests.Unit\\bin\\Release')
                         {
-                            bat "\"${VSTest}\" \"WebApplication.Tests.Unit.dll\" /Logger:trx;LogFileName=Results_${env.BUILD_ID}.trx /Framework:Framework45"
+                            bat "\"${VSTest}\" \"WebApplication.Tests.Unit.dll\" /Logger:trx;LogFileName=Results_${env.BUILD_NUMBER}.trx /Framework:Framework45"
                         }
                         step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: true, keepLongStdio: true])
                     }
                 }
-				stage('Deploy') {
+				// stage('Deploy to Dev') {
+				// 	//when { branch 'develop' }
+				// 	steps {
+				// 	    bat "\"${MSDeploy}\" -source:package=\"%WORKSPACE%\\artifacts\\WebApp_${env.RELEASE_VERSION}.${env.BUILD_NUMBER}.zip\"  -verb:sync -dest:auto -allowUntrusted=true "
+                //         configFileProvider([configFile(fileId: 'web.Dev.config', targetLocation: 'C:\\Jenkins_builds\\sites\\dev\\web.config')]) {}
+				// 	}
+				// }
+				// stage('Smoke Test Dev') {
+				// 	//when { branch 'develop' }
+				// 	steps {
+				// 		smokeTest("http://localhost:8090/")
+				// 	}
+				// }
+				stage('Deploy to QA') {
 					//when { branch 'develop' }
 					steps {
-					    bat "\"${MSDeploy}\" -source:package=\"%WORKSPACE%\\artifacts\\WebApp_${env.RELEASE_VERSION}.${env.BUILD_NUMBER}.zip\"  -verb:sync -dest:auto -allowUntrusted=true "
-                        configFileProvider([configFile(fileId: '8e4e7923-d1b1-4175-90f3-0cfa1362ac6e', targetLocation: 'C:\\Jenkins_builds\\sites\\dev\\web.config')]) {}
+					    bat "\"${MSDeploy}\" -source:package=\"%WORKSPACE%\\artifacts\\WebApp_${env.RELEASE_VERSION}.${env.BUILD_NUMBER}.zip\"  -verb:sync -dest:auto -allowUntrusted=true -setParam:name=\"IIS Web Application Name\",value=\"TestAppQA\""
+                        configFileProvider([configFile(fileId: 'web.QA.config', targetLocation: 'C:\\Jenkins_builds\\sites\\qa\\web.config')]) {}
 					}
 				}
-				stage('Smoke Test') {
+				stage('Smoke Test QA') {
 					//when { branch 'develop' }
 					steps {
-						smokeTest("http://localhost:8090/")
+						smokeTest("http://localhost:8091/")
 					}
 				}
 				stage('Acceptance test') {
@@ -79,11 +92,27 @@ pipeline {
 				    steps {
 				        dir('WebApplication.Tests.Acceptance\\bin\\Release')
                         {
-                            bat "\"${VSTest}\" \"WebApplication.Tests.Acceptance.dll\" /Logger:trx;LogFileName=Results_${env.BUILD_ID}.trx /Framework:Framework45"
+                            bat "\"${VSTest}\" \"WebApplication.Tests.Acceptance.dll\" /Logger:trx;LogFileName=Results_${env.BUILD_NUMBER}.trx /Framework:Framework45"
                         }
                         step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: true, keepLongStdio: true])
                     }
                 }
+				stage('Deploy') {
+					input {
+						message 'Deploy to Prod?'
+						ok 'Yes'
+					}
+					steps {
+					    bat "\"${MSDeploy}\" -source:package=\"%WORKSPACE%\\artifacts\\WebApp_${env.RELEASE_VERSION}.${env.BUILD_NUMBER}.zip\"  -verb:sync -dest:auto -allowUntrusted=true -setParam:name=\"IIS Web Application Name\",value=\"TestAppProd\""
+                        configFileProvider([configFile(fileId: 'web.Prod.config', targetLocation: 'C:\\Jenkins_builds\\sites\\prod\\web.config')]) {}
+					}
+				} 
+				stage('Smoke Test Prod') {
+					//when { branch 'develop' }
+					steps {
+						smokeTest("http://localhost:8092/")
+					}
+				}  
 			}
 			post { 
                 failure { 
