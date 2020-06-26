@@ -6,6 +6,16 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
 </head>
 <body>
+    @{
+        var env = System.Configuration.ConfigurationManager.AppSettings["environment"];
+
+        if (env != "Production")
+        {
+            <div class="alert alert-info text-center" role="alert">
+                Environment: <strong>@env</strong>.
+            </div>
+        }
+    }
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
