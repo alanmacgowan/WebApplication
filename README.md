@@ -267,7 +267,7 @@ _Slack notifications_
 
 
 ## Includes:
-* Jenkinsfile: for multibranch pipeline on Jenkins, triggers from SCM on PR merged to develop branch, builds and deploys to local IIS Server.
+* Jenkinsfile: for declarative pipeline on Jenkins, triggers from SCM on push to master branch, builds and deploys to local IIS Server.
 * web-deploy.ps1: powershell script that builds, deploys to file system and package web application.
 * web-publish.ps1: powershell script that builds, packages and deploys to IIS web application.
 * Docker/Dockerfile: Dockerfile for linux image with jenkins installed and plugins.
@@ -276,6 +276,9 @@ _Slack notifications_
 ##Resources:
 ### Pluralsight:
 [Using Declarative Jenkins Pipelines](https://app.pluralsight.com/library/courses/using-declarative-jenkins-pipelines/table-of-contents)
+
 [Getting Started with Jenkins 2](https://app.pluralsight.com/library/courses/jenkins-2-getting-started)
+
 [Building a Modern CI/CD Pipeline with Jenkins](https://app.pluralsight.com/library/courses/building-modern-ci-cd-pipeline-jenkins)
+
 
