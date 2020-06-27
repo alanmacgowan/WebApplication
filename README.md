@@ -1,4 +1,4 @@
-# WebApplication
+# Jenkins CI with declarative pipelines
 Sample Application for CI/CD using Jenkins with declarative Pipelines as Continuous Integration server.
 
 ![Jenkins Pipeline](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/JENKINS%20BLUE%20OCEAN.png)
