@@ -5,6 +5,9 @@ Sample Application for CI/CD using Jenkins with declarative Pipelines as Continu
 
 _Jenkins Pipeline Stages in Blue Ocean_
 
+## Diagram
+
+![CI Diagram](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/ci%20diagram.png)
 
 ## Tools:
 Area |Tools
@@ -40,7 +43,7 @@ Build Tools |MSBuild, Nuget, MSDeploy
 ### Config File Management
 Added web.config files for Dev, QA and Prod.
 
-![cONFIG FILES](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/JENKINS%20CONFIG%20FILES.png)
+![Config files](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/JENKINS%20CONFIG%20FILES.png)
 
 ### Gihub
 Need to add a webhook that points to the Jenkins server.
@@ -267,7 +270,6 @@ _Slack notifications_
 * Jenkinsfile: for multibranch pipeline on Jenkins, triggers from SCM on PR merged to develop branch, builds and deploys to local IIS Server.
 * web-deploy.ps1: powershell script that builds, deploys to file system and package web application.
 * web-publish.ps1: powershell script that builds, packages and deploys to IIS web application.
-* azure-pipelines.yml: configuration file for Azure Devops pipeline.
 * Docker/Dockerfile: Dockerfile for linux image with jenkins installed and plugins.
 * Docker/Dockerfile_Windows: Dockerfile for windows image(based on: https://blog.alexellis.io/continuous-integration-docker-windows-containers/)
 
