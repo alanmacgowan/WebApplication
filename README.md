@@ -19,7 +19,8 @@ Tech stack | ASP.Net MVC, EF, JQuery, Bootstrap, Webpack
 Database | SQL Server
 Web Server | IIS
 Testing | MSTest, Specflow, Selenium, Moq
-Build Tools |MSBuild, Nuget, MSDeploy
+Build Tools |MSBuild, MSDeploy
+Dependencies | Nuget, npm
 
 ## Setup
 
@@ -33,7 +34,7 @@ Build Tools |MSBuild, Nuget, MSDeploy
 * timestamper
 * mstest
 * msbuild
-* nodejs:latest
+* nodejs
 * vstestrunner
 * workflow-aggregator
 
