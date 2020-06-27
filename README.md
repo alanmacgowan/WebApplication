@@ -1,16 +1,53 @@
 # WebApplication
-Sample Application for CI/CD
+Sample Application for CI/CD using Jenkins with declarative Pipelines as Continuous Integration server.
+
+![Jenkins Pipeline](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/JENKINS%20BLUE%20OCEAN.png)
+
+_Jenkins Pipeline Stages in Blue Ocean_
 
 
 ## Tools:
-* CI: Jenkins 
-* Source Code: GitHub (Cloud)
-* Issue Management: GitHub (Cloud)
-* Tech stack: ASP.Net MVC, EF, JQuery, Bootstrap, Webpack
-* Database: SQL Server
-* Web Server: IIS
-* Testing: MSTest, Specflow, Selenium, Moq
-* Build Tools: MSBuild, Nuget, MSDeploy
+Area |Tools
+-----|------
+CI | Jenkins 
+Source Code | GitHub (Cloud)
+Issue Management | GitHub (Cloud)
+Tech stack | ASP.Net MVC, EF, JQuery, Bootstrap, Webpack
+Database | SQL Server
+Web Server | IIS
+Testing | MSTest, Specflow, Selenium, Moq
+Build Tools |MSBuild, Nuget, MSDeploy
+
+## Setup
+
+### Jenkins
+
+### Plugins:
+* github
+* git
+* global-slack-notifier
+* pollscm
+* timestamper
+* mstest
+* msbuild
+* nodejs:latest
+* vstestrunner
+* workflow-aggregator
+
+### Job:
+![Job Setup](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/JENKINS%20GITHUB%20CONF.png)
+
+### Config File Management
+Added web.config files for Dev, QA and Prod.
+
+![cONFIG FILES](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/JENKINS%20CONFIG%20FILES.png)
+
+### Gihub
+Need to add a webhook that points to the Jenkins server.
+
+![Github webhooks setup](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/GITHUB%20WEBHOOK.png)
+
+_Github webhooks setup_
 
 ## jenkinsfile:
 
@@ -36,9 +73,12 @@ stage('Get Source'){
   }
 }
 ```
-<img src="https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/GITHUB%20NOTIF%20PENDING.png" />
+![Github Pending Status](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/GITHUB%20NOTIF%20PENDING.png)
+
+_Github Pending status_
 
 ### Stage Restore dependencies
+This stage runs 3 parallel stages: Nuget Restore, NodeJS and Set Assembly Version.
 
 ### Nuget
 Restores nuget packages, runs in parallel.
@@ -94,12 +134,16 @@ void setAssemblyVersion(){
 }
 
 ```
+![Version](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/APP%20VERSION.png)
+
+_Version number shown in footer_
+
 ### Stage Build & Package
 Build and packages WebApplication for latter deployment. The artifact is saved as part of the build in Jenkins.
 ```
 stage('Build & Package') {
     steps {
-					    bat "\"${MSBuild}\" WebApplication.sln /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /t:build /p:Configuration=QA /p:Platform=\"Any CPU\" /p:DesktopBuildPackageLocation=\"%WORKSPACE%\\artifacts\\WebApp_${env.RELEASE_VERSION}.${env.BUILD_NUMBER}.zip\""
+	bat "\"${MSBuild}\" WebApplication.sln /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /t:build /p:Configuration=QA /p:Platform=\"Any CPU\" /p:DesktopBuildPackageLocation=\"%WORKSPACE%\\artifacts\\WebApp_${env.RELEASE_VERSION}.${env.BUILD_NUMBER}.zip\""
     }
 }
 ```
@@ -116,6 +160,10 @@ stage('Unit test') {
     }
 }
 ```
+![Unit and Acceptance Tests results](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/JENKINS%20TESTS.png)
+
+_Unit and Acceptance Tests results_
+
 ### Stage Deploy to QA
 Deploys package to QA IIS site, web.config is reeplaced by config file in Jenkins.
 ```
@@ -147,7 +195,7 @@ void smokeTest(String url){
 }
 ```
 ### Stage Acceptance test
-Runs acceptance testsusing local IIS site.
+Runs acceptance tests using QA site.
 ```
 stage('Acceptance test') {
     steps {
@@ -160,7 +208,7 @@ stage('Acceptance test') {
 }
 ```
 ### Stage Deploy to Prod
-Waits for input from user to deploy.
+This stage waits for input from user to deploy.
 Deploys package to Prod IIS site, web.config is reeplaced by config file in Jenkins.
 ```
 stage('Deploy to Prod') {
@@ -174,6 +222,8 @@ stage('Deploy to Prod') {
   }
 } 
 ```
+![Input for Deploy to Prod stage](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/JENKINS%20INPUT%20STEP.png)
+
 ### Stage Smoke Test Prod
 Smoke Test Prod IIS site, using Powershell script.
 ```
@@ -200,6 +250,19 @@ post {
   }
 }
 ```
+![Artifacts](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/JENKINS%20ARTIFACTS.png)
+
+_Artifacts stored in Jenkins_
+
+![Version](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/GITHUB%20NOTIF%20SUCCESS.png)
+
+_Github successful notification_
+
+![Version](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/SLACK%20NOTIF.png)
+
+_Slack notifications_
+
+
 ## Includes:
 * Jenkinsfile: for multibranch pipeline on Jenkins, triggers from SCM on PR merged to develop branch, builds and deploys to local IIS Server.
 * web-deploy.ps1: powershell script that builds, deploys to file system and package web application.
@@ -207,4 +270,10 @@ post {
 * azure-pipelines.yml: configuration file for Azure Devops pipeline.
 * Docker/Dockerfile: Dockerfile for linux image with jenkins installed and plugins.
 * Docker/Dockerfile_Windows: Dockerfile for windows image(based on: https://blog.alexellis.io/continuous-integration-docker-windows-containers/)
+
+##Resources:
+### Pluralsight:
+[Using Declarative Jenkins Pipelines](https://app.pluralsight.com/library/courses/using-declarative-jenkins-pipelines/table-of-contents)
+[Getting Started with Jenkins 2](https://app.pluralsight.com/library/courses/jenkins-2-getting-started)
+[Building a Modern CI/CD Pipeline with Jenkins](https://app.pluralsight.com/library/courses/building-modern-ci-cd-pipeline-jenkins)
 
