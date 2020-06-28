@@ -169,7 +169,7 @@ stage('Unit test') {
 _Unit and Acceptance Tests results_
 
 ### Stage Deploy to QA
-Deploys package to QA IIS site, web.config is reeplaced by config file in Jenkins.
+Deploys package to QA IIS site, web.config is replaced by config file in Jenkins.
 ```
 stage('Deploy to QA') {
   steps {
@@ -213,7 +213,7 @@ stage('Acceptance test') {
 ```
 ### Stage Deploy to Prod
 This stage waits for input from user to deploy.
-Deploys package to Prod IIS site, web.config is reeplaced by config file in Jenkins.
+Deploys package to Prod IIS site, web.config is replaced by config file in Jenkins.
 ```
 stage('Deploy to Prod') {
   input {
@@ -274,7 +274,7 @@ _Slack notifications_
 * Docker/Dockerfile: Dockerfile for linux image with jenkins installed and plugins.
 * Docker/Dockerfile_Windows: Dockerfile for windows image(based on: https://blog.alexellis.io/continuous-integration-docker-windows-containers/)
 
-##Resources:
+## Resources:
 ### Pluralsight:
 [Using Declarative Jenkins Pipelines](https://app.pluralsight.com/library/courses/using-declarative-jenkins-pipelines/table-of-contents)
 
