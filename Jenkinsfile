@@ -7,6 +7,9 @@ pipeline {
 				Nuget = 'C:\\Program Files (x86)\\Jenkins\\nuget.exe'
 				MSDeploy = "C:\\Program Files (x86)\\IIS\\Microsoft Web Deploy V3\\msdeploy.exe"
             }
+			options {
+				buildDiscarder(logRotator(numToKeepStr:'5'))
+			}
 			stages {
 				stage('Get Source'){
 				//	when { branch 'develop' }
@@ -97,7 +100,7 @@ pipeline {
                         step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: true, keepLongStdio: true])
                     }
                 }
-				stage('Deploy') {
+				stage('Deploy to Prod') {
 					input {
 						message 'Deploy to Prod?'
 						ok 'Yes'

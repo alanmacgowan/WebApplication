@@ -5,7 +5,6 @@ VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{AAEDA2DE-72E4-4194-AA2E-E12F01FEE10E}"
 	ProjectSection(SolutionItems) = preProject
-		azure-pipelines.yml = azure-pipelines.yml
 		Jenkinsfile = Jenkinsfile
 		web-deploy.ps1 = web-deploy.ps1
 		web-publish.ps1 = web-publish.ps1
