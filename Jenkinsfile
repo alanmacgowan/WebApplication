@@ -161,7 +161,7 @@ void setAssemblyVersion(){
 }
 
 void smokeTest(String url){
-    def status = powershell (returnStatus: true, script: powershell ("""
+    def status = powershell (returnStatus: true, script: """
 		\$result = Invoke-WebRequest $url
 		if (\$result.StatusCode -ne 200) {
 			Write-Error \"Did not get 200 OK\"
@@ -171,6 +171,6 @@ void smokeTest(String url){
 		}
     """)
     if (status != 0) {
-       error "This pipeline stops here!"
+       error "Smoke test failed: $url"
     }
 }
