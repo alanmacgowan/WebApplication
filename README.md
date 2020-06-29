@@ -188,14 +188,18 @@ stage('Smoke Test QA') {
 }
 ...
 void smokeTest(String url){
-	powershell ("""
+    def status = powershell (returnStatus: true, script: powershell ("""
 		\$result = Invoke-WebRequest $url
 		if (\$result.StatusCode -ne 200) {
 			Write-Error \"Did not get 200 OK\"
+			exit 1
 		} else{
 			Write-Host \"Successfully connect.\"
 		}
-	""")
+    """)
+    if (status != 0) {
+       error "This pipeline stops here!"
+    }
 }
 ```
 ### Stage Acceptance test
