@@ -38,9 +38,6 @@ Dependencies | Nuget, npm
 * vstestrunner
 * workflow-aggregator
 
-### Job:
-![Job Setup](https://github.com/alanmacgowan/alanmacgowan.github.io/blob/master/JENKINS%20GITHUB%20CONF.png)
-
 ### Config File Management
 Added web.config files for Dev, QA and Prod.
 
