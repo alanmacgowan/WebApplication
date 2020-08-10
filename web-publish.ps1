@@ -74,6 +74,7 @@ Function Get-SourceCode{
     $SourcePath = $SourcesFolder + "\WebApplication"
     If (Test-Path $SourcePath) {
         Set-Location $SourcePath
+        git checkout -f $Branch
         git pull origin $Branch
     }
     Else {
